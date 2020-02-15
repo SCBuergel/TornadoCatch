@@ -33,7 +33,7 @@ little warm up to ETHDever hackathon
   - array of IPs
 
 ### tshark parameters
-Complete command: `tshark -i en0 -I -l -Tfields -e frame.time -e wlan.da -e dns.qry.name -e dns.a "port 53"`
+Complete command: `tshark -i en0 -I -l -Tjson -e frame.time -e wlan.da -e dns.qry.name -e dns.a "port 53"`
 Breakdown of parameters:
 - `-i en0` -> listens on interface en0 (wifi) 
 - `-I` -> monitor mode (capture without associating with any wifi router)

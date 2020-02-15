@@ -42,6 +42,8 @@ app.listen(8081, ()=>{
 
 // BEGIN tshark SECTION
 
+var wifiData = [];
+
 const wifiInterfaceName = "en0"; // @NOTE: probably needs to be changed for Windows
 
 // start tshark listening for DNS packets and recording for each packet
@@ -72,39 +74,58 @@ proc.stdout.on("data", (data) => {
     data[0] = " ".charCodeAt(0);
   }
 
+  // add opening bracket (if necessary)
   if (String.fromCharCode(data[0]) != "[") {
     data = "[" + data;
   }
 
-  // strip 
-  if (String.fromCharCode(data[data.length - 1]) != "]") {
+  // strip closing comma (if necessary)
+  if (String.fromCharCode(data[data.length - 1]) == ",") {
     data[data.length - 1] = "]".charCodeAt(0);
   }
-  console.log("data: " + data);
+
+  // add closing bracket (if necessary)
+  if (String.fromCharCode(data[data.length - 1]) != "]") {
+    data += "]";
+  }
+
+
+  //console.log("data: " + data);
+
 
   // now that JSON is repaired we can parse it
-  let packet = JSON.parse(data);
-  console.log("re-serialized: " + JSON.stringify(packet));
-  let source = packet._source;
-  let layers = source.layers;
+  let packets = JSON.parse(data);
+  //console.log("length: " + packets.length);
+  packets.forEach(packet => {
+  //console.log("re-serialized: " + JSON.stringify(packet));
+    let source = packet._source;
+    let layers = source.layers;
+  
+    // skip this packet if it has no time, MAC address, URL or IP
+    // typically this should only be missing dns.a
+    // (in case it's a request and not a response)
+    if (layers["frame.time"] === undefined ||
+        layers["wlan.da"] === undefined ||
+        layers["dns.qry.name"] === undefined ||
+        layers["dns.a"] === undefined) {
+      return;
+    }
 
-  // skip this packet if it has no time, MAC address, URL or IP
-  // typically this should only be missing dns.a
-  // (in case it's a request and not a response)
-  if (!layers.hasOwnProperty("frame.time") ||
-      !layers.hasOwnProperty("wlan.da") || 
-      !layers.hasOwnProperty("dns.qry.name" ||
-      !layers.hasOwnProperty("dns.a"))) {
-        return;
-      }
+    let time = Date.parse(layers["frame.time"][0]);
+    let MAC = layers["wlan.da"][0];
+    let URL = layers["dns.qry.name"][0];
+    let IPs = layers["dns.a"];
 
-  let frametime = layers["frame.time"][0];
-  let wlanda = layers["wlan.da"][0];
-  let dnsqryname = layers["dns.qry.name"][0];
-  let dnsas = layers["dns.a"];
-  console.log(frametime, "---", wlanda, "---", dnsqryname, "---", JSON.stringify(dnsas));
-  // TODO: process data here
+    // keep data in memory
+    wifiData.push({
+      "time": time,
+      "MAC": MAC,
+      "URL": URL,
+      "IPs": IPs
+    });
 
+    console.log(time, "---", MAC, "---", URL, "---", JSON.stringify(IPs));
+  });
 });
 
 proc.stderr.on("data", (data) => {

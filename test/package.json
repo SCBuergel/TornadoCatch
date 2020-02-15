@@ -1,0 +1,25 @@
+{
+  "name": "tornadocatch",
+  "version": "1.0.0",
+  "description": "little warm up to ETHDever hackathon",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SCBuergel/TornadoCatch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SCBuergel/TornadoCatch/issues"
+  },
+  "homepage": "https://github.com/SCBuergel/TornadoCatch#readme",
+  "dependencies": {
+    "web3": "^1.2.6"
+  }
+}

@@ -1,5 +1,6 @@
 # TornadoCatch
 TornadoCatch is a demonstrator to raise awareness for network-level privacy issues on Ethereum. It records wifi traffic and on-chain activity and tries to find matching activities. This would allow for de-anonymization of users. As an example we chose the popular token mixer Tornado.Cash.  
+
 ## Architecture Overview
 The TornadoCatch application comprises a NodeJS catcher server that records data and attempts to find matches as well as a Chrome extension that connects to the catcher server and renders matches.
 ```

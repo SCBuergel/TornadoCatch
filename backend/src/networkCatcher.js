@@ -1,5 +1,5 @@
-const childProcess = require('child_process');
-const EventEmitter = require( 'events' );
+const childProcess = require("child_process");
+const EventEmitter = require("events");
 
 class NetworkCatcher extends EventEmitter {
   constructor() {
@@ -11,15 +11,17 @@ class NetworkCatcher extends EventEmitter {
     // time, requester MAC address, URL, IP(s)
     const proc = childProcess.spawn(
       "tshark", 
-      ["-i", "en0",
-      "-I",
-      "-l",
-      "-Tjson",
-      "-e", "frame.time", 
-      "-e", "wlan.da", 
-      "-e", "dns.qry.name", 
-      "-e", "dns.a",
-      "port 53"]
+      [
+        "-i", "en0",
+        "-I",
+        "-l",
+        "-Tjson",
+        "-e", "frame.time", 
+        "-e", "wlan.da", 
+        "-e", "dns.qry.name", 
+        "-e", "dns.a",
+        "port 53"
+      ]
     );
 
     proc.stdout.on("data", (data) => {
@@ -50,9 +52,7 @@ class NetworkCatcher extends EventEmitter {
         data += "]";
       }
 
-
       //console.log("data: " + data);
-
 
       // now that JSON is repaired we can parse it
       let packets = JSON.parse(data);
@@ -78,7 +78,7 @@ class NetworkCatcher extends EventEmitter {
         let IPs = layers["dns.a"];
 
         // emit signal for listener
-        this.emit('network', {
+        this.emit("newPacket", {
           "time": time,
           "MAC": MAC,
           "URL": URL,
@@ -100,7 +100,5 @@ class NetworkCatcher extends EventEmitter {
   }
 }
 
-
 const networkCatcher = new NetworkCatcher();
-
 module.exports = networkCatcher;

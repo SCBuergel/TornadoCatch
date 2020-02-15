@@ -1,8 +1,8 @@
-const web3 = require('web3');
-const EventEmitter = require( 'events' );
+const web3 = require("web3");
+const EventEmitter = require("events");
 
-class ChainCatcher extends EventEmitter{
-    constructor(){
+class ChainCatcher extends EventEmitter {
+    constructor() {
         super();
 
         this.web3js = new web3("wss://mainnet.infura.io/ws/v3/bffcc6c52d79446c82d56282b076400a");
@@ -21,7 +21,7 @@ class ChainCatcher extends EventEmitter{
         ).on("connected", function(subscriptionId){
             console.log(`Connected: ${subscriptionId}`);
         }).on("data", function(event){
-            this.emit("new_trx", event);
+            this.emit("newTx", event);
         }).on("error", function(err, receipt){
             console.log(err);
             console.log(receipt);

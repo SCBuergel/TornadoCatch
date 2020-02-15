@@ -13,15 +13,27 @@ class MatchMaker extends EventEmitter {
 
         networkCatcher.on("newPacket", (packet) => {
             packets.push(packet);
-            console.log(packet);
+            //console.log(packet);
         });
 
         chainCatcher.on("newTx", (tx) => {
+            console.log("NEW TX RECEIVED!!!")
             txs.push(tx);
             console.log(tx);
         });
 
         function match() {
+            if (packets.length == 0 || txs.length == 0) {
+                return;
+            }
+            
+            pIndex = packets.length - 1;
+            tIndex = txs.length - 1;
+
+            // this.emit("newMatch", {
+            //     MAC: packets[pIndex].MAC,
+            //     time: txs[tIndex].
+            // })
             // MAC
             // time
             // hash

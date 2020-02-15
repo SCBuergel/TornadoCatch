@@ -82,4 +82,8 @@ table tr:hover {
   background-color: #aaa2a2;
 }
 
+a {
+  text-decoration: none;
+}
+
 /*# sourceMappingURL=style.css.map */

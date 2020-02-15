@@ -41,35 +41,29 @@ app.listen(8081, ()=>{
     console.log("Listening on port 8081");
 });
 
-// childProcess.exec('cat *.js missing_file | wc -l', (error, stdout, stderr) => {
-//     if (error) {
-//       console.error(`exec error: ${error}`);
-//       return;
-//     }
-//     console.log(`stdout: ${stdout}`);
-//     console.error(`stderr: ${stderr}`);
-//   });
-  
-// tcpdump -I -i en0 -w tout "udp port 53"
-// const ls = childProcess.spawn("tcpdump", ["-i", "en0", "-I", "udp port 53"]);
-const ls = childProcess.spawn("tshark", ["-i", "en0", "-I", "-l", "port 53"]);
-// const ls = childProcess.spawn("tshark", ["-i", "en0", "-I"]);
-// const ls = childProcess.spawn("ls", ["index.js"]);
+// start tshark listening for DNS packets and recording for each packet
+// time, requester MAC address, URL, IP(s)
+const proc = childProcess.spawn(
+  "tshark", 
+  ["-i", "en0",
+  "-I",
+  "-l", 
+  "-Tfields", 
+  "-e", "frame.time", 
+  "-e", "wlan.da", 
+  "-e", "dns.qry.name", 
+  "-e", "dns.a",
+  "port 53"]
+  );
 
-ls.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-  
-  ls.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-  });
-  
-  ls.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
-  });
+  proc.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
 
-//   setInterval(() => {
-//       console.log("checking...");
-//   }, (
-//       1000
-//   ));
+proc.stderr.on('data', (data) => {
+  console.error(`stderr: ${data}`);
+});
+
+proc.on('close', (code) => {
+  console.log(`child process exited with code ${code}`);
+});

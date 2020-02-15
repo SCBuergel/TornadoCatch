@@ -7,10 +7,7 @@ const fs = require('fs');
 const web3 = require('web3');
 
 // local dependencies
-require('./networkCatcher.js');
-require('./chainCatcher.js');
 require('./matchMaker.js');
-require('./catcherApi.js');
 
 const app = express();
 
@@ -27,8 +24,6 @@ app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('combined'));
-
-web3js = new web3(new web3.providers.HttpProvider("https://mainnet.infura.io/v3/bffcc6c52d79446c82d56282b076400a"));
 
 app.get("/", (req, res) => {
     const m = matches.map(match => (

@@ -1,5 +1,12 @@
 const WebSocket = require("ws");
 
+// local dependencies
+const matchMaker = require("./matchMaker.js");
+
+matchMaker.on("newMatch", (matchData) => {
+  console.log("NEW MATCH: " + JSON.stringify(matchData, null, 2));
+});
+
 class CatcherAPI {
 
     constructor() {

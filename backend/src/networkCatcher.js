@@ -49,13 +49,9 @@ proc.stdout.on("data", (data) => {
     data += "]";
   }
 
-  //console.log("data: " + data);
-
   // now that JSON is repaired we can parse it
   let packets = JSON.parse(data);
-  //console.log("length: " + packets.length);
   packets.forEach(packet => {
-  //console.log("re-serialized: " + JSON.stringify(packet));
     let source = packet._source;
     let layers = source.layers;
   
@@ -76,16 +72,7 @@ proc.stdout.on("data", (data) => {
       "MAC": MAC
     });
 
-    //console.log(time, "---", MAC, "---", URL, "---", JSON.stringify(IPs));
   });
 });
-
-/*this.proc.stderr.on("data", (data) => {
-  console.error("stderr: ${data}");
-});
-
-this.proc.on("close", (code) => {
-  console.log(`child process exited with code ${code}`);
-});*/
 
 module.exports = networkCatcher;

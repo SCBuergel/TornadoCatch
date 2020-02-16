@@ -42,9 +42,8 @@ function match() {
     const deltaTimeS = 100;
 
     // find all packets of target domain
-    let targetPackets = [];
     console.log("going to process another match...");
-    packets.forEach((packet) => {
+    for (let packet of packets) {
         let url = packet.URL;
         if(packet.URL.includes(targetDomain)) {
             // we found a packet for the target domain!
@@ -69,10 +68,10 @@ function match() {
 
                 // in order to prevent multiple results, remove the tx and return
                 txs.pop();
-                return;
+                break;
             }
         }
-    })
+    }
 
 
 

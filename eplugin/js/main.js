@@ -1,80 +1,77 @@
 // const URL = 'ws://localhost:3030';
 // let ws = new WebSocket(URL);
+chrome.browserAction.setBadgeText({text: ""});
 
-// ws.onopen = () => {
-//     // on connecting, do nothing but log it to the console
-//     console.log('socket connected')
-// }
+var numMatches = 0;
 
-// ws.onmessage = evt => {
-//     // on receiving a message, add it to the list of messages
-//     const message = JSON.parse(evt.data)
-//     console.log(evt.data);
-//     addRow(message);
-//     chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
-//     chrome.browserAction.setBadgeText({text: "New"});
-// }
+var xhttp = new XMLHttpRequest();
 
-// ws.onerror = (err) => {
-//     console.log("WS error: " + err);
-// }
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var response = JSON.parse(xhttp.responseText);
+        var matches = response;
+        for (var c = numMatches; c < matches.length; c++ ){
+            addRow(matches[c]);
+        }
+        numMatches = matches.length;
+    }
+};
 
-// // this.ws.onclose = () => {
-// //     console.log('socket disconnected')
-// //     // automatically try to reconnect on connection loss
-// //     this.setState({
-// //         ws: new WebSocket(URL),
-// //     })
-// // }
+const endpoint = "http://localhost:8080/matches"
 
-// document.addEventListener("click", function() {
-//     chrome.browserAction.setBadgeText({text: ""});
-// });
+xhttp.open("GET", endpoint, true);
+xhttp.send();
 
-// function addRow(rowData) { //Once required JSON file, pass variable instance of it to printTable
-//     //Initializing variable for creating HTML elements
-//     var tr = document.createElement("TR");
+// poll the number of entries every 2 seconds to render the notification
+setInterval(() => {
+    xhttp.open("GET", endpoint, true);
+    xhttp.send();
+}, 2000)
 
-//     var macAddress = document.createElement("TD");
-//     macAddress.setAttribute("id", "MAC");
-//     var a1 = document.createElement("A");
-//     a1.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
-//     a1.setAttribute("target", "_blank");
-//     var addressText = document.createTextNode(rowData["MAC"]);
-//     a1.appendChild(addressText);
-//     macAddress.appendChild(a1);
+function addRow(rowData) { //Once required JSON file, pass variable instance of it to printTable
+    //Initializing variable for creating HTML elements
+    var tr = document.createElement("TR");
 
-//     var time = document.createElement("TD");
-//     time.setAttribute("id", "time");
-//     var a2 = document.createElement("A");
-//     a2.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
-//     a2.setAttribute("target", "_blank");
-//     var timeText = document.createTextNode(rowData["time"]);
-//     a2.appendChild(timeText);
-//     time.appendChild(a2);
+    var macAddress = document.createElement("TD");
+    macAddress.setAttribute("id", "MAC");
+    var a1 = document.createElement("A");
+    a1.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
+    a1.setAttribute("target", "_blank");
+    var addressText = document.createTextNode(rowData["MAC"]);
+    a1.appendChild(addressText);
+    macAddress.appendChild(a1);
 
-//     var hash = document.createElement("TD");
-//     hash.setAttribute("id", "hash");
-//     var a3 = document.createElement("A");
-//     a3.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
-//     a3.setAttribute("target", "_blank");
-//     var hashText = document.createTextNode(rowData["hash"].substring(0, 8) + "...");
-//     a3.appendChild(hashText);
-//     hash.appendChild(a3);
+    var time = document.createElement("TD");
+    time.setAttribute("id", "time");
+    var a2 = document.createElement("A");
+    a2.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
+    a2.setAttribute("target", "_blank");
+    var timeText = document.createTextNode(rowData["time"]);
+    a2.appendChild(timeText);
+    time.appendChild(a2);
 
-//     var URL = document.createElement("TD");
-//     URL.setAttribute("id", "URL");
-//     var a4 = document.createElement("A");
-//     a4.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
-//     a4.setAttribute("target", "_blank");
-//     var URLText = document.createTextNode(rowData["URL"]);
-//     a4.appendChild(URLText);
-//     URL.appendChild(a4);
+    var hash = document.createElement("TD");
+    hash.setAttribute("id", "hash");
+    var a3 = document.createElement("A");
+    a3.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
+    a3.setAttribute("target", "_blank");
+    var hashText = document.createTextNode(rowData["hash"].substring(0, 8) + "...");
+    a3.appendChild(hashText);
+    hash.appendChild(a3);
 
-//     var table = document.getElementById("mainTable");
-//     tr.appendChild(macAddress);
-//     tr.appendChild(time);
-//     tr.appendChild(hash);
-//     tr.appendChild(URL);
-//     table.appendChild(tr);
-// }
+    var URL = document.createElement("TD");
+    URL.setAttribute("id", "URL");
+    var a4 = document.createElement("A");
+    a4.setAttribute("href", "https://kovan.etherscan.io/tx/" + rowData["hash"]);
+    a4.setAttribute("target", "_blank");
+    var URLText = document.createTextNode(rowData["URL"]);
+    a4.appendChild(URLText);
+    URL.appendChild(a4);
+
+    var table = document.getElementById("mainTable");
+    tr.appendChild(macAddress);
+    tr.appendChild(time);
+    tr.appendChild(hash);
+    tr.appendChild(URL);
+    table.appendChild(tr);
+}

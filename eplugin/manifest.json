@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "test",
-  "description": "test for now",
+  "name": "TornadoCatch",
+  "description": "ETHDenver 2020 hackathon project highlighting the relevance of network-level privacy in Ethereum",
   "version": "1.0",
 
   "browser_action": {

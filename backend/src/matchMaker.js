@@ -5,7 +5,12 @@ const networkCatcher = require("./networkCatcher.js");
 const chainCatcher = require("./chainCatcher.js");
 //const catcherApi = require("./catcherApi.js");
 
-class MatchMaker extends EventEmitter {}
+class MatchMaker extends EventEmitter {
+    constructor(){
+        super();
+        this.matches = [];
+    }
+}
 
 const matchMaker = new MatchMaker();
 
@@ -54,7 +59,8 @@ function match() {
 
             if(dt < deltaTimeS) {
                 console.log("MATCH");
-                matchMaker.emit("newMatch", {
+                //matchMaker.emit("newMatch", 
+                matchMaker.matches.push({
                     MAC: packet.MAC,
                     time: tx.blockTime,
                     hash: tx.txHash,

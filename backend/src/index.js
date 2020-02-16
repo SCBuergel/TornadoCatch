@@ -1,4 +1,10 @@
-const web3 = require("web3");
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const fs = require("fs");
+// const web3 = require("web3");
 
 require("./catcherApi.js");
 

@@ -21,7 +21,7 @@ button {
 }
 
 body {
-    font-family: 'Rubik', sans-serif;
+    font-family: "Courier New", Courier, monospace;
     font-weight: 400;
 }
 
@@ -64,7 +64,7 @@ table {
 }
 
     table th {
-        background-color: #3d0b75;
+        background-color: #000000;
         color: white;
         font-size: 15px;
         padding: 15px;

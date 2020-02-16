@@ -39,13 +39,16 @@ function match() {
     const tx = txs[txs.length - 1];
 
     const targetDomain = ".com";
-    const deltaTimeS = 100;
+    const deltaTimeS = 45;
 
     // find all packets of target domain
     console.log("going to process another match...");
     for (let packet of packets) {
         let url = packet.URL;
-        if(packet.URL.includes(targetDomain)) {
+
+        // we don't need to search URL anymore as we now apply an IP filter on only Tornado
+        //if(packet.URL.includes(targetDomain)) {
+
             // we found a packet for the target domain!
             // now check if there are any transactions within +/- deltaTimeS
             // which match the dapp
@@ -58,22 +61,22 @@ function match() {
 
             if(dt < deltaTimeS) {
                 console.log("MATCH");
+
                 //matchMaker.emit("newMatch", 
                 matchMaker.matches.push({
                     MAC: packet.MAC,
                     time: tx.blockTime,
                     hash: tx.txHash,
-                    URL: packet.URL
+                    URL: "tornado.cash"
                 });
 
                 // in order to prevent multiple results, remove the tx and return
                 txs.pop();
+                packets = [];
                 break;
             }
-        }
+        //}
     }
-
-
 
 }
 

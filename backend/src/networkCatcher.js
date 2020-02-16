@@ -4,7 +4,6 @@ const EventEmitter = require("events");
 class NetworkCatcher extends EventEmitter {}
 const networkCatcher = new NetworkCatcher();
 
-
 const wifiInterfaceName = "en0"; // @NOTE: probably needs to be changed for Windows
 
 // start tshark listening for DNS packets and recording for each packet
@@ -12,15 +11,13 @@ const wifiInterfaceName = "en0"; // @NOTE: probably needs to be changed for Wind
 const proc = childProcess.spawn(
   "tshark", 
   [
-    "-i", "en0",
+    "-i", wifiInterfaceName,
     "-I",
     "-l",
     "-Tjson",
     "-e", "frame.time", 
     "-e", "wlan.da", 
-    "-e", "dns.qry.name", 
-    "-e", "dns.a",
-    "port 53"
+    "src 185.199.108.153 or src 185.199.109.153 or src 185.199.110.153 or src 185.199.111.153"
   ]
 );
 
@@ -66,23 +63,17 @@ proc.stdout.on("data", (data) => {
     // typically this should only be missing dns.a
     // (in case it's a request and not a response)
     if (layers["frame.time"] === undefined ||
-        layers["wlan.da"] === undefined ||
-        layers["dns.qry.name"] === undefined ||
-        layers["dns.a"] === undefined) {
+        layers["wlan.da"] === undefined) {
       return;
     }
 
     let time = Date.parse(layers["frame.time"][0]);
     let MAC = layers["wlan.da"][0];
-    let URL = layers["dns.qry.name"][0];
-    let IPs = layers["dns.a"];
 
     // emit signal for listener
     networkCatcher.emit("newPacket", {
       "time": time,
-      "MAC": MAC,
-      "URL": URL,
-      "IPs": IPs
+      "MAC": MAC
     });
 
     //console.log(time, "---", MAC, "---", URL, "---", JSON.stringify(IPs));
